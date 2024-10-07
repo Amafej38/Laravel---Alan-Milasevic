@@ -7,79 +7,45 @@ use Illuminate\Http\Request;
 
 class ConferenceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        //
+        // Пример данных: список всех конференций
+        $conferences = [
+            ['id' => 1, 'name' => 'Tech Conference', 'date' => '2024-10-10'],
+            ['id' => 2, 'name' => 'Business Summit', 'date' => '2024-11-15']
+        ];
+
+        return view('admin.conferences.index', compact('conferences'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
-        //
+        return view('admin.conferences.form');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        //
+        // Логика для сохранения конференции
+        return redirect()->route('admin.conferences.index')->with('success', 'Conference created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
-        //
+        // Пример данных: конкретная конференция для редактирования
+        $conference = ['id' => $id, 'name' => 'Tech Conference', 'description' => 'Details about the conference...'];
+
+        return view('admin.conferences.form', compact('conference'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
-        //
+        // Логика для обновления конференции
+        return redirect()->route('admin.conferences.index')->with('success', 'Conference updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
-        //
+        // Логика для удаления конференции
+        return redirect()->route('admin.conferences.index')->with('success', 'Conference deleted successfully.');
     }
 }

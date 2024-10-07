@@ -1,17 +1,16 @@
 @extends('layouts.app')
 
-@section('title', 'Manage Conferences')
-
 @section('content')
-    <h1>Conference Management (Admin)</h1>
-    <a href="{{ url('/admin/conferences/create') }}">Create New Conference</a>
-
+    <h1>Admin: Manage Conferences</h1>
+    <a href="{{ url('/admin/conference/create') }}">Create New Conference</a>
     <ul>
         @foreach($conferences as $conference)
-            <li>
-                {{ $conference->title }} - 
-                <a href="{{ url('/admin/conferences/edit', $conference->id) }}">Edit</a> |
-                <a href="{{ url('/admin/conferences/delete', $conference->id) }}">Delete</a>
+            <li>{{ $conference['name'] }} - {{ $conference['date'] }}
+                <a href="{{ url('/admin/conference/'.$conference['id'].'/edit') }}">Edit</a>
+                <form action="{{ url('/admin/conference/'.$conference['id'].'/delete') }}" method="POST" style="display:inline;">
+                    @csrf
+                    <button type="submit">Delete</button>
+                </form>
             </li>
         @endforeach
     </ul>

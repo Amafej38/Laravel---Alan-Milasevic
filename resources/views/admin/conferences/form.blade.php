@@ -1,20 +1,15 @@
 @extends('layouts.app')
 
-@section('title', isset($conference) ? 'Edit Conference' : 'Create Conference')
-
 @section('content')
-    <h1>{{ isset($conference) ? 'Edit Conference' : 'Create Conference' }}</h1>
-
-    <form action="{{ isset($conference) ? url('/admin/conferences/update', $conference->id) : url('/admin/conferences/store') }}" method="POST">
+    <h1>{{ isset($conference) ? 'Edit' : 'Create' }} Conference</h1>
+    <form action="{{ isset($conference) ? url('/admin/conference/'.$conference['id'].'/update') : url('/admin/conference/store') }}" method="POST">
         @csrf
-        <div>
-            <label for="title">Title</label>
-            <input type="text" name="title" value="{{ $conference->title ?? '' }}">
-        </div>
-        <div>
-            <label for="description">Description</label>
-            <textarea name="description">{{ $conference->description ?? '' }}</textarea>
-        </div>
+        <label for="name">Conference Name</label>
+        <input type="text" id="name" name="name" value="{{ isset($conference) ? $conference['name'] : '' }}" required>
+
+        <label for="description">Description</label>
+        <textarea id="description" name="description" required>{{ isset($conference) ? $conference['description'] : '' }}</textarea>
+
         <button type="submit">{{ isset($conference) ? 'Update' : 'Create' }}</button>
     </form>
 @endsection

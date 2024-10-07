@@ -3,34 +3,47 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\EmployeeController;
-use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ConferenceController;
+use App\Http\Controllers\Admin\UserController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
+// Главная страница
 Route::get('/', function () {
-    return view('welcome');
-});
+    return view('index');
+})->name('home');
 
 // Маршруты для клиента
-Route::get('/conferences', [ClientController::class, 'index']);
-Route::get('/conference/{id}', [ClientController::class, 'show']);
-Route::post('/conference/register/{id}', [ClientController::class, 'register']);
+Route::prefix('client')->name('client.')->group(function () {
+    Route::get('/conferences', [ClientController::class, 'index'])->name('conferences.index');
+    Route::get('/conference/{id}', [ClientController::class, 'show'])->name('conference.show');
+    Route::post('/conference/register', [ClientController::class, 'register'])->name('conference.register');
+});
 
 // Маршруты для сотрудника
-Route::get('/employee/conferences', [EmployeeController::class, 'index']);
+Route::prefix('employee')->name('employee.')->group(function () {
+    Route::get('/conferences', [EmployeeController::class, 'index'])->name('conferences.index');
+    Route::get('/conference/{id}', [EmployeeController::class, 'show'])->name('conference.show');
+});
 
 // Маршруты для администратора
-Route::prefix('admin')->group(function () {
-    Route::resource('users', UserController::class); // CRUD маршруты для пользователей
-    Route::resource('conferences', ConferenceController::class); // CRUD маршруты для конференций
+Route::prefix('admin')->name('admin.')->group(function () {
+    // Страница выбора администратора (пользователи или конференции)
+    Route::get('/', function () {
+        return view('admin.index');  // Страница выбора
+    })->name('dashboard');
+
+    // Управление конференциями
+    Route::get('/conferences', [ConferenceController::class, 'index'])->name('conferences.index');
+    Route::get('/conference/create', [ConferenceController::class, 'create'])->name('conference.create');
+    Route::post('/conference/store', [ConferenceController::class, 'store'])->name('conference.store');
+    Route::get('/conference/{id}/edit', [ConferenceController::class, 'edit'])->name('conference.edit');
+    Route::post('/conference/{id}/update', [ConferenceController::class, 'update'])->name('conference.update');
+    Route::post('/conference/{id}/delete', [ConferenceController::class, 'destroy'])->name('conference.destroy');
+
+    // Управление пользователями
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/user/create', [UserController::class, 'create'])->name('user.create'); // Маршрут для создания пользователя
+    Route::post('/user/store', [UserController::class, 'store'])->name('user.store'); // Маршрут для сохранения нового пользователя
+    Route::get('/user/{id}/edit', [UserController::class, 'edit'])->name('user.edit');
+    Route::post('/user/{id}/update', [UserController::class, 'update'])->name('user.update');
+    Route::post('/user/{id}/delete', [UserController::class, 'destroy'])->name('user.destroy'); // Маршрут для удаления пользователя
 });
