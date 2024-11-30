@@ -15,14 +15,21 @@
         <tbody>
             @foreach($conferences as $conference)
             <tr>
-                <td>{{ $conference['name'] }}</td>
-                <td>{{ $conference['date'] }}</td>
+                <td>{{ $conference->name }}</td>
+                <td>{{ $conference->date }}</td>
                 <td>
-                    <a href="{{ url('/admin/conference/'.$conference['id'].'/edit') }}" class="btn btn-warning">Edit</a>
-                    <form action="{{ url('/admin/conference/'.$conference['id'].'/delete') }}" method="POST" style="display:inline;">
-                        @csrf
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>
+                    <!-- Кнопка "Edit" -->
+                    <a href="{{ url('/admin/conference/'.$conference->id.'/edit') }}" class="btn btn-warning">Edit</a>
+
+                    <!-- Кнопка "Delete" с проверкой на прошедшие конференции -->
+                    @if(!\Carbon\Carbon::parse($conference->date)->isPast())
+                        <form action="{{ url('/admin/conference/'.$conference->id.'/delete') }}" method="POST" style="display:inline;">
+                            @csrf
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    @else
+                        <button class="btn btn-secondary" disabled>Cannot Delete</button>
+                    @endif
                 </td>
             </tr>
             @endforeach

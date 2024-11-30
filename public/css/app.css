@@ -91,12 +91,20 @@ button, .btn {
     text-decoration: none;
     display: inline-block;
     margin-right: 5px;
-    width: 100px; 
+    width: 143px; 
     text-align: center;
 }
 
 button.btn-danger {
     background-color: #dc3545;
+    font-size: 16px;
+}
+
+a.btn.btn-warning {
+    width: 80px;
+}
+
+button.btn.btn-secondary {
     font-size: 16px;
 }
 
@@ -110,6 +118,10 @@ button:hover, .btn:hover {
 
 a.btn.btn-primary.mb-3 {
     min-width: 175px;
+}
+
+button.btn.btn-success {
+    font-size: 16px;
 }
 
 form label {

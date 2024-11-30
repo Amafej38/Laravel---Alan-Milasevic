@@ -112,6 +112,10 @@ a.btn.btn-primary.mb-3 {
     min-width: 175px;
 }
 
+button.btn.btn-success {
+    font-size: 16px;
+}
+
 form label {
     display: block;
     margin-bottom: 5px;

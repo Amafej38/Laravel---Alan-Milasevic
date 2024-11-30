@@ -4,18 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Conference;
 
 class ConferenceController extends Controller
 {
     public function index()
     {
-        // Пример данных: список всех конференций
-        $conferences = [
-            ['id' => 1, 'name' => 'Tech Conference', 'date' => '2024-10-10'],
-            ['id' => 2, 'name' => 'Business Summit', 'date' => '2024-11-15']
-        ];
+        $conferences = Conference::all();
 
-        return view('admin.conferences.index', compact('conferences'));
+        return view('admin.conferences.index', ['conferences' => $conferences]);
     }
 
     public function create()
@@ -25,27 +22,74 @@ class ConferenceController extends Controller
 
     public function store(Request $request)
     {
-        // Логика для сохранения конференции
-        return redirect()->route('admin.conferences.index')->with('success', 'Conference created successfully.');
-    }
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'description' => 'required|string',
+        'date' => [
+            'required',
+            'date',
+            'after_or_equal:today', // Дата должна быть сегодняшней или будущей
+            function ($attribute, $value, $fail) {
+                $oneYearFromNow = now()->addYear(); // Максимум год вперед
+                if (\Carbon\Carbon::parse($value)->greaterThan($oneYearFromNow)) {
+                    $fail('The conference date cannot be more than one year in the future.');
+                }
+            },
+        ],
+    ]);
 
-    public function edit($id)
-    {
-        // Пример данных: конкретная конференция для редактирования
-        $conference = ['id' => $id, 'name' => 'Tech Conference', 'description' => 'Details about the conference...'];
+    // Создание конференции
+    Conference::create($request->all());
 
-        return view('admin.conferences.form', compact('conference'));
-    }
-
-    public function update(Request $request, $id)
-    {
-        // Логика для обновления конференции
-        return redirect()->route('admin.conferences.index')->with('success', 'Conference updated successfully.');
+    return redirect()->route('admin.conferences.index')->with('success', 'Conference created successfully!');
     }
 
     public function destroy($id)
     {
-        // Логика для удаления конференции
-        return redirect()->route('admin.conferences.index')->with('success', 'Conference deleted successfully.');
+    $conference = Conference::findOrFail($id);
+
+    // Проверка: конференции с прошедшей датой нельзя удалить
+    if (\Carbon\Carbon::parse($conference->date)->isPast()) {
+        return redirect()->route('admin.conferences.index')
+            ->with('error', 'You cannot delete a conference that has already passed.');
+    }
+
+    $conference->delete();
+
+    return redirect()->route('admin.conferences.index')
+        ->with('success', 'Conference deleted successfully!');
+    }
+
+    public function edit($id)
+    {
+        $conference = Conference::findOrFail($id);
+        return view('admin.conferences.form', ['conference' => $conference]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $conference = Conference::findOrFail($id);
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'date' => [
+                'required',
+                'date',
+                'after_or_equal:today',
+                function ($attribute, $value, $fail) {
+                    $oneYearFromNow = now()->addYear();
+                    if (\Carbon\Carbon::parse($value)->greaterThan($oneYearFromNow)) {
+                        $fail('The conference date cannot be more than one year in the future.');
+                    }
+                },
+            ],
+        ]);
+
+        $conference->update($request->all());
+
+        return redirect()->route('admin.conferences.index')
+            ->with('success', 'Conference updated successfully!');
     }
 }
+

@@ -7,6 +7,6 @@ mix.js('resources/js/app.js', 'public/js')
 .css('resources/css/app.css', 'public/css')
 
 // Копируем Bootstrap и jQuery файлы
-.copy('node_modules/bootstrap/dist/css/bootstrap.css', 'public/css')
-.copy('node_modules/bootstrap/dist/js/bootstrap.bundle.js', 'public/js')
-.copy('node_modules/jquery/dist/jquery.js', 'public/js');
+.copy('node_modules/bootstrap/dist/css/bootstrap.css', 'public/css')// del
+.copy('node_modules/bootstrap/dist/js/bootstrap.bundle.js', 'public/js')// del
+.copy('node_modules/jquery/dist/jquery.js', 'public/js');// del

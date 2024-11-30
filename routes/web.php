@@ -41,9 +41,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     // Управление пользователями
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
-    Route::get('/user/create', [UserController::class, 'create'])->name('user.create'); // Маршрут для создания пользователя
-    Route::post('/user/store', [UserController::class, 'store'])->name('user.store'); // Маршрут для сохранения нового пользователя
+    Route::get('/user/create', [UserController::class, 'create'])->name('user.create');
+    Route::post('/user/store', [UserController::class, 'store'])->name('user.store');
     Route::get('/user/{id}/edit', [UserController::class, 'edit'])->name('user.edit');
     Route::post('/user/{id}/update', [UserController::class, 'update'])->name('user.update');
-    Route::post('/user/{id}/delete', [UserController::class, 'destroy'])->name('user.destroy'); // Маршрут для удаления пользователя
+    Route::post('/user/{id}/delete', [UserController::class, 'destroy'])->name('user.destroy');
 });
