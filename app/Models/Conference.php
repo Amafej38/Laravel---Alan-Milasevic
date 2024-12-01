@@ -9,9 +9,6 @@ class Conference extends Model
 {
     use HasFactory;
 
-    // Включение автоматических меток времени
     public $timestamps = true;
-
-    // Поля, которые могут быть заполнены
     protected $fillable = ['name', 'description', 'date'];
 }

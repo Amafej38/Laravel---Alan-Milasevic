@@ -2,32 +2,45 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Conference;
 use Illuminate\Http\Request;
 
 class ClientController extends Controller
 {
     public function index()
     {
-        // Пример данных: планируемые конференции
-        $conferences = [
-            ['id' => 1, 'name' => 'Tech Conference', 'date' => '2024-10-10', 'status' => 'upcoming'],
-            ['id' => 2, 'name' => 'Business Summit', 'date' => '2024-11-15', 'status' => 'upcoming']
-        ];
-
+        $conferences = $this->getUpcomingConferences();
         return view('client.index', compact('conferences'));
     }
 
     public function show($id)
     {
-        // Пример данных: конкретная конференция
-        $conference = ['id' => $id, 'name' => 'Tech Conference', 'description' => 'Details about the conference...'];
-
+        $conference = Conference::findOrFail($id);
         return view('client.show', compact('conference'));
     }
 
     public function register(Request $request)
     {
-        // Логика регистрации на конференцию
+        $conferenceId = $request->input('conference_id');
+        $conference = Conference::findOrFail($conferenceId);
+        $conference->increment('registered_users_count');
+
         return redirect()->back()->with('success', 'You have successfully registered for the conference.');
+    }
+
+    public function unregister(Request $request)
+    {
+        $conferenceId = $request->input('conference_id');
+        $conference = Conference::findOrFail($conferenceId);
+        if ($conference->registered_users_count > 0) {
+            $conference->decrement('registered_users_count');
+        }
+
+        return redirect()->back()->with('success', 'You have successfully unregistered from the conference.');
+    }
+
+    public function getUpcomingConferences()
+    {
+        return Conference::where('date', '>=', now()->toDateString())->get();
     }
 }

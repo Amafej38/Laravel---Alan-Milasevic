@@ -28,9 +28,9 @@ class ConferenceController extends Controller
         'date' => [
             'required',
             'date',
-            'after_or_equal:today', // Дата должна быть сегодняшней или будущей
+            'after_or_equal:today', 
             function ($attribute, $value, $fail) {
-                $oneYearFromNow = now()->addYear(); // Максимум год вперед
+                $oneYearFromNow = now()->addYear(); 
                 if (\Carbon\Carbon::parse($value)->greaterThan($oneYearFromNow)) {
                     $fail('The conference date cannot be more than one year in the future.');
                 }
@@ -38,7 +38,6 @@ class ConferenceController extends Controller
         ],
     ]);
 
-    // Создание конференции
     Conference::create($request->all());
 
     return redirect()->route('admin.conferences.index')->with('success', 'Conference created successfully!');
@@ -48,7 +47,6 @@ class ConferenceController extends Controller
     {
     $conference = Conference::findOrFail($id);
 
-    // Проверка: конференции с прошедшей датой нельзя удалить
     if (\Carbon\Carbon::parse($conference->date)->isPast()) {
         return redirect()->route('admin.conferences.index')
             ->with('error', 'You cannot delete a conference that has already passed.');
